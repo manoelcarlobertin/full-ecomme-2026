@@ -1,0 +1,115 @@
+<%# 1. Lógica para detectar se temos um e-mail pré-definido %>
+<% email_value = resource.email.presence || params[:email] %>
+<% has_email = email_value.present? %>
+
+<div class="min-h-screen flex items-center justify-center bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-lg pointer-events-none">
+    <div class="absolute top-0 left-1/4 w-72 h-72 bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen animate-pulse"></div>
+    <div class="absolute bottom-0 right-1/4 w-72 h-72 bg-purple-600/10 rounded-full blur-[100px] mix-blend-screen"></div>
+  </div>
+
+  <div class="max-w-md w-full space-y-8 bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 p-10 rounded-2xl shadow-2xl relative z-10">
+
+    <div class="text-center">
+      <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-500 shadow-lg shadow-blue-500/20">
+        <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+          <path d="M2 17L12 22L22 17" />
+          <path d="M2 12L12 17L22 12" />
+        </svg>
+      </div>
+
+      <h2 class="mt-6 text-3xl font-bold tracking-tight text-white">
+        Bem-vindo de volta
+      </h2>
+      <p class="mt-2 text-sm text-zinc-400">
+        Acesse sua conta para gerenciar seus pedidos de compra.
+      </p>
+    </div>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mt-8 space-y-6" }) do |f| %>
+
+      <% if flash[:alert] %>
+        <div class="rounded-lg bg-red-900/30 border border-red-800 p-4 text-sm text-red-200 flex items-center gap-3">
+          <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <%= flash[:alert] %>
+        </div>
+      <% end %>
+
+      <div class="space-y-5">
+
+        <div>
+          <%= f.label :email, "Endereço de e-mail", class: "block text-sm font-medium text-zinc-300 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+              </svg>
+            </div>
+            <%# 2. Alteração no Campo de Email: Value explícito e autofocus condicional (só foca se estiver vazio) %>
+            <%= f.email_field :email, 
+                  value: email_value,
+                  autofocus: !has_email, 
+                  autocomplete: "email", 
+                  placeholder: "seu@email.com", 
+                  class: "block w-full pl-10 pr-3 py-2.5 border border-zinc-700 rounded-lg leading-5 bg-zinc-950/50 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out" %>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <%= f.label :password, "Senha", class: "block text-sm font-medium text-zinc-300" %>
+            <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+              <%= link_to "Esqueceu a senha?", new_password_path(resource_name), class: "text-sm font-medium text-blue-500 hover:text-blue-400 transition" %>
+            <% end %>
+          </div>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <%# 3. Alteração no Campo de Senha: Autofocus ativa se o email já estiver preenchido %>
+            <%= f.password_field :password, 
+                  autofocus: has_email,
+                  autocomplete: "current-password", 
+                  placeholder: "••••••••", 
+                  class: "block w-full pl-10 pr-3 py-2.5 border border-zinc-700 rounded-lg leading-5 bg-zinc-950/50 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <% if devise_mapping.rememberable? %>
+          <div class="flex items-center">
+            <%= f.check_box :remember_me, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-zinc-700 rounded bg-zinc-800 cursor-pointer" %>
+            <%= f.label :remember_me, "Lembrar-me", class: "ml-2 block text-sm text-zinc-400 cursor-pointer select-none" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div>
+        <%= f.button class: "group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 transition-all duration-200 shadow-lg shadow-blue-600/20" do %>
+          <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+            <svg class="h-5 w-5 text-blue-300 group-hover:text-blue-100 transition ease-in-out duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14" />
+            </svg>
+          </span>
+          Entrar na Plataforma
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="mt-6 text-center">
+      <p class="text-sm text-zinc-500">
+        Não tem uma conta?
+        <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+          <%= link_to "Criar conta gratuitamente", new_registration_path(resource_name), class: "font-medium text-blue-500 hover:text-blue-400 transition" %>
+        <% end %>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html class="dark">
+
+  <head>
+    <title>Full Ecomme Admin</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-900 text-gray-100 antialiased">
+    <div class="flex h-screen overflow-hidden">
+      <%= render "shared/admin/sidebar" %>
+
+      <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+        <%= render "shared/admin/header" %>
+
+        <main class="w-full grow p-6">
+          <% if notice %>
+          <div class="p-4 mb-4 text-sm text-green-400 bg-gray-800 rounded-lg border border-green-800" role="alert"><%= notice %></div>
+          <% end %>
+          <% if alert %>
+          <div class="p-4 mb-4 text-sm text-red-400 bg-gray-800 rounded-lg border border-red-800" role="alert"><%= alert %></div>
+          <% end %>
+
+          <%= yield %>
+        </main>
+
+        <footer class="p-4 text-center text-xs text-gray-500 border-t border-gray-800">
+          Full Ecomme © <%= Time.current.year %>
+        </footer>
+      </div>
+      
+    </div>
+  </body>
+
+</html>

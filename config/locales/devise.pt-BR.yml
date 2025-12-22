@@ -1,0 +1,7 @@
+pt-BR:
+  devise:
+    registrations:
+      signed_up: "Registro realizado e login efetuado com sucesso."
+    sessions:
+      signed_in: "Login efetuado com sucesso."
+      signed_out: "Saiu com sucesso."

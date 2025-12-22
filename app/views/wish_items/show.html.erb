@@ -1,0 +1,96 @@
+<div class="min-h-screen bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+
+    <nav class="mb-8 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+      <%= link_to "Meus Favoritos", wish_items_path, class: "hover:text-blue-600 transition-colors" %>
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+      <span class="text-zinc-900 dark:text-white font-medium truncate"><%= @wish_item.product.name %></span>
+    </nav>
+
+    <div class="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-2">
+
+        <div class="relative bg-zinc-100 dark:bg-zinc-800 aspect-square lg:aspect-auto flex items-center justify-center p-8">
+          <% if @wish_item.product.image.attached? %>
+          <%= image_tag @wish_item.product.image, class: "max-h-[500px] w-full object-contain drop-shadow-xl hover:scale-105 transition-transform duration-500" %>
+          <% else %>
+          <div class="text-zinc-400 flex flex-col items-center">
+            <svg class="w-24 h-24 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <span class="text-lg">Sem imagem disponível</span>
+          </div>
+          <% end %>
+        </div>
+
+        <div class="p-8 lg:p-12 flex flex-col h-full">
+
+          <div class="mb-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm text-blue-600 font-medium mb-2">
+                  Adicionado em <%= l(@wish_item.created_at, format: :long) %>
+                </p>
+                <h1 class="text-3xl font-bold text-zinc-900 dark:text-white mb-2">
+                  <%= @wish_item.product.name %>
+                </h1>
+              </div>
+
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium 
+                <%= @wish_item.product.available? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                <%= @wish_item.product.status_i18n %>
+              </span>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mt-3">
+              <% @wish_item.product.categories.each do |category| %>
+              <span class="px-2.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                <%= category.name %>
+              </span>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="mb-8 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-100 dark:border-zinc-700">
+            <p class="text-sm text-zinc-500 mb-1">Preço atual</p>
+            <p class="text-4xl font-bold text-zinc-900 dark:text-white">
+              <%= number_to_currency(@wish_item.product.price) %>
+            </p>
+          </div>
+
+          <div class="prose prose-zinc dark:prose-invert max-w-none mb-8 flex-grow">
+            <h3 class="text-lg font-semibold mb-2">Sobre o produto</h3>
+            <p class="text-zinc-600 dark:text-zinc-300 leading-relaxed">
+              <%= @wish_item.product.description %>
+            </p>
+          </div>
+
+          <div class="mt-auto pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row gap-4">
+
+            <%= button_to add_to_cart_path(product_id: @wish_item.product.id), 
+                class: "flex-1 w-full inline-flex justify-center items-center px-6 py-3.5 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg shadow-blue-600/20 transition-all transform hover:-translate-y-0.5" do %>
+            <svg class="mr-2 -ml-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+            Adicionar ao Carrinho
+            <% end %>
+
+            <%= button_to wish_item_path(@wish_item), 
+                method: :delete,
+                class: "flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-3.5 border border-zinc-300 dark:border-zinc-600 shadow-sm text-base font-medium rounded-lg text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all hover:text-red-600",
+                form: { data: { turbo_confirm: "Tem certeza que deseja remover?" } } do %>
+            <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+            Remover
+            <% end %>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

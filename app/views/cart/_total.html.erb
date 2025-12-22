@@ -1,0 +1,6 @@
+<dd id="cart_total" class="text-xl font-bold text-zinc-900 dark:text-white">
+  <%= number_to_currency(total, unit: "R$ ", separator: ",", delimiter: ".") %>
+</dd>
+
+<%# Essa partial deve conter apenas o elemento HTML que exibe o preço,
+ com o ID exato que o Turbo vai procurar para substituir. %>

@@ -1,0 +1,59 @@
+<div class="min-h-screen bg-zinc-50 dark:bg-zinc-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="bg-white dark:bg-zinc-800 shadow rounded-lg p-6 mb-8 text-center border border-zinc-200 dark:border-zinc-700">
+      <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/50 mb-4">
+        <svg class="h-8 w-8 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h2 class="text-3xl font-bold text-zinc-900 dark:text-white">Pedido Realizado!</h2>
+      <p class="mt-2 text-lg text-zinc-600 dark:text-zinc-400">
+        Seu pedido <strong class="text-blue-600">#<%= @order.id %></strong> foi registrado com sucesso.
+      </p>
+      <p class="text-sm text-zinc-500 mt-1">Status atual: <span class="font-medium text-yellow-600"><%= @order.status.humanize %></span></p>
+    </div>
+
+    <div class="bg-white dark:bg-zinc-800 shadow rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700">
+      <div class="px-4 py-5 sm:px-6 border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50">
+        <h3 class="text-lg leading-6 font-medium text-zinc-900 dark:text-white">Resumo da Compra</h3>
+      </div>
+      <ul class="divide-y divide-zinc-200 dark:divide-zinc-700">
+        <% @order.order_items.includes(:product).each do |item| %>
+          <li class="px-4 py-4 sm:px-6 flex items-center justify-between hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition">
+            <div class="flex items-center gap-4">
+              <div class="h-12 w-12 rounded bg-zinc-200 dark:bg-zinc-700 overflow-hidden flex-shrink-0">
+                <% if item.product.image.attached? %>
+                  <%= image_tag item.product.image, class: "h-full w-full object-cover" %>
+                <% end %>
+              </div>
+
+              <div>
+                <p class="text-sm font-medium text-zinc-900 dark:text-white"><%= item.product.name %></p>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400">Quantidade: <%= item.quantity %></p>
+              </div>
+            </div>
+            <div class="text-sm font-semibold text-zinc-900 dark:text-white">
+              <%= number_to_currency(item.payed_price, unit: "R$ ", separator: ",", delimiter: ".") %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+
+      <div class="px-6 py-6 bg-zinc-50 dark:bg-zinc-900/50 border-t border-zinc-200 dark:border-zinc-700 flex justify-between items-center">
+        <span class="text-base font-medium text-zinc-500 dark:text-zinc-400">Valor Total</span>
+        <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <%= number_to_currency(@order.order_items.sum(:payed_price), unit: "R$ ", separator: ",", delimiter: ".") %>
+        </span>
+      </div>
+    </div>
+
+    <div class="mt-8 flex justify-center gap-4">
+      <%= link_to "Voltar para a Loja", root_path, class: "inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition" %>
+
+      <button class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+        Ver Meus Pedidos
+      </button>
+    </div>
+  </div>
+</div>

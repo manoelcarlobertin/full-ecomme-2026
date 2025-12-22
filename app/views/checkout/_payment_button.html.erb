@@ -1,0 +1,26 @@
+<div id="<%= dom_id(order, :payment_area) %>" class="p-4 border rounded shadow-sm bg-gray-50">
+
+  <% if order.juno_charge # Se já tem cobrança criada %>
+
+  <div class="text-center text-green-600">
+    <h3 class="font-bold text-lg">Cobrança Gerada!</h3>
+    <p class="text-sm text-gray-600 mb-2">Status: <%= order.juno_charge.status %></p>
+
+    <% if order.juno_charge.billet_url %>
+      <%= link_to "Abrir Boleto", order.juno_charge.billet_url, 
+                target: "_blank", 
+                class: "bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition" %>
+    <% end %>
+  </div>
+
+  <% else # Se ainda não tem cobrança %>
+
+    <div class="text-center">
+      <p class="mb-2 text-gray-700">Total a pagar: <strong><%= number_to_currency(order.total_amount) %></strong></p>
+      <%= button_to "Pagar com Boleto", pay_test_path(order), 
+              method: :get, 
+              class: "bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition font-bold" %>
+    </div>
+
+  <% end %>
+</div>

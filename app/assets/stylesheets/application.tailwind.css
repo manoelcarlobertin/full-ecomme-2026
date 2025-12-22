@@ -1,0 +1,21 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+@layer components {
+  .input-dark {
+    @apply bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5;
+  }
+  .btn-primary {
+    @apply text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center;
+  }
+  .btn-secondary {
+    @apply text-gray-300 bg-transparent border border-gray-600 hover:bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center;
+  }
+}

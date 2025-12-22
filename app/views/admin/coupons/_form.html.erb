@@ -1,0 +1,30 @@
+<div class="bg-gray-800 border border-gray-700 rounded-lg shadow-lg p-6">
+  <%= simple_form_for [:admin, coupon], html: { class: "space-y-6" } do |f| %>
+
+    <% if coupon.errors.any? %>
+      <div class="bg-red-900/50 text-red-200 p-4 rounded mb-4 text-sm">
+        <ul class="list-disc pl-5">
+          <% coupon.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%= f.input :name, label: "Nome do Cupom", input_html: { class: "input-dark", placeholder: "Ex: Desconto de Natal" } %>
+
+      <%= f.input :code, label: "Código Promocional", input_html: { class: "input-dark font-mono uppercase", placeholder: "NATAL10" } %>
+
+      <%= f.input :discount_value, label: "Valor do Desconto (R$)", input_html: { class: "input-dark", step: "0.01" } %>
+      <%= f.input :max_use, label: "Quantidade Máxima", input_html: { class: "input-dark" } %>
+
+      <%= f.input :due_date, as: :datetime, html5: true, label: "Válido até", input_html: { class: "input-dark" } %>
+
+      <%= f.input :status, collection: Coupon.statuses.keys, label: "Status", input_html: { class: "input-dark" } %>
+    </div>
+
+    <div class="flex justify-end gap-3 pt-6 border-t border-gray-700 mt-6">
+      <%= link_to "Cancelar", admin_coupons_path, class: "btn-secondary" %>
+      <%= f.button :submit, class: "btn-primary" %>
+    </div>
+  <% end %>
+</div>

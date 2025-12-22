@@ -1,0 +1,53 @@
+<div id="<%= dom_id wish_item %>" class="group relative flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+  
+  <%= link_to product_path(wish_item.product), class: "relative aspect-[4/3] overflow-hidden bg-zinc-100 dark:bg-zinc-800" do %>
+    <% if wish_item.product.image.attached? %>
+      <%= image_tag wish_item.product.image, class: "h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-500" %>
+    <% else %>
+      <div class="h-full w-full flex items-center justify-center text-zinc-400">
+        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+      </div>
+    <% end %>
+
+    <div class="absolute top-2 right-2 z-10">
+      <%= button_to wish_item_path(wish_item), 
+          method: :delete, 
+          class: "p-2 rounded-full bg-white/90 dark:bg-zinc-900/90 text-zinc-500 hover:text-red-500 shadow-sm backdrop-blur-sm transition-colors",
+          form: { data: { turbo_confirm: "Remover este item dos favoritos?" } } do %>
+            <span class="sr-only">Remover</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          <% end %>
+    </div>
+  <% end %>
+
+  <div class="flex-1 flex flex-col p-4">
+    
+    <div class="flex flex-wrap gap-1 mb-2">
+      <% wish_item.product.categories.each do |category| %>
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+          <%= category.name %>
+        </span>
+      <% end %>
+    </div>
+
+    <h3 class="text-base font-semibold text-zinc-900 dark:text-white mb-1">
+      <%= link_to wish_item.product.name, product_path(wish_item.product), class: "hover:text-blue-500 transition-colors" %>
+    </h3>
+
+    <p class="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 mb-4 flex-1">
+      <%= wish_item.product.description %>
+    </p>
+
+    <div class="flex items-center justify-between mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800">
+      <span class="text-lg font-bold text-zinc-900 dark:text-white">
+        <%= number_to_currency(wish_item.product.price) %>
+      </span>
+
+      <%= button_to add_to_cart_path(product_id: wish_item.product.id, from_wishlist: true), 
+    class: "flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm shadow-blue-600/20" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+      Comprar
+    <% end %>
+    </div>
+  </div>
+</div>

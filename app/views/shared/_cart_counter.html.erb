@@ -1,0 +1,15 @@
+<div id="cart_counter" class="relative">
+  <%= link_to cart_path, class: "group -m-2 p-2 flex items-center text-zinc-400 hover:text-white transition-colors" do %>
+      <span class="sr-only">Itens no carrinho</span>
+
+      <svg class="flex-shrink-0 h-6 w-6 group-hover:text-blue-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+      </svg>
+
+      <% if count > 0 %>
+        <span class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-red-600 rounded-full border-2 border-zinc-900">
+          <%= count %>
+        </span>
+      <% end %>
+  <% end %>
+</div>

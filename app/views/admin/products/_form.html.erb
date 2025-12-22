@@ -1,0 +1,108 @@
+<div class="bg-gray-800 border border-gray-700 rounded-lg shadow-lg p-6">
+  <%= simple_form_for [:admin, product], html: { class: "space-y-6" } do |f| %>
+
+  <% if product.errors.any? %>
+  <div class="bg-red-900/50 text-red-200 p-4 rounded mb-4">
+    <ul class="list-disc pl-5">
+      <% product.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <%# Isso vai elevar o nível da UX (Experiência do Usuário). Ninguém gosta de selecionar um arquivo e ficar na dúvida se o sistema reconheceu ou não. %>
+    <div class="col-span-1" data-controller="image-preview"> <label class="block text-sm font-medium text-gray-300 mb-2">Imagem de Capa</label>
+      <%# Vamos implementar o Stimulus Controller para ler o arquivo do input e atualizar o src da tag <img> instantaneamente, tudo no front-end (sem ir ao servidor). %>
+      <div class="relative w-full h-64 bg-gray-900 border-2 border-dashed border-gray-600 rounded-lg flex flex-col items-center justify-center hover:border-blue-500 transition group cursor-pointer overflow-hidden">
+
+        <div data-image-preview-target="placeholder" class="flex flex-col items-center justify-center <%= product.image.attached? ? 'hidden' : '' %>">
+          <svg class="w-12 h-12 text-gray-500 group-hover:text-blue-400 mb-2 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <span class="text-xs text-gray-500 group-hover:text-blue-400 transition">Clique para upload</span>
+        </div>
+
+        <%= image_tag (product.image.attached? ? product.image : ""), 
+                class: "absolute inset-0 w-full h-full object-cover transition " + (product.image.attached? ? "opacity-100" : "opacity-0 hidden"),
+                data: { image_preview_target: "preview" } 
+            %>
+
+        <%= f.input :image, label: false, 
+                input_html: { 
+                  class: "absolute inset-0 w-full h-full opacity-0 cursor-pointer",
+                  data: { 
+                    image_preview_target: "input",
+                    action: "change->image-preview#readURL" 
+                  }
+                } 
+            %>
+      </div>
+    </div>
+
+    <div class="col-span-2 space-y-5">
+
+      <%= f.input :name, label: "Nome", input_html: { class: "input-dark w-full bg-gray-900 border-gray-700 text-white rounded p-2" } %>
+
+      <div class="grid grid-cols-2 gap-4">
+        <%= f.input :price, label: "Preço (R$)", input_html: { class: "input-dark w-full bg-gray-900 border-gray-700 text-white rounded p-2" } %>
+        <%= f.input :status, collection: Product.statuses.keys, label: "Status", input_html: { class: "input-dark w-full bg-gray-900 border-gray-700 text-white rounded p-2" } %>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Categorias</label>
+        <div class="bg-gray-900 border border-gray-700 rounded p-4 h-32 overflow-y-auto grid grid-cols-2 gap-2">
+          <%= f.association :categories, as: :check_boxes, 
+                      label: false,
+                      wrapper: false,
+                      item_wrapper_class: "flex items-center space-x-2 text-sm text-gray-300 hover:text-white",
+                      input_html: { class: "rounded bg-gray-700 border-gray-600 text-blue-600 focus:ring-blue-500" } 
+                  %>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <%= f.input :description, 
+          as: :text,
+          label: "Descrição",
+          label_html: { class: "block text-sm font-medium text-gray-300 mb-2" },
+          input_html: { 
+            class: "w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-500 min-h-[70px]",
+            placeholder: "Digite a descrição detalhada do produto..." 
+          } 
+      %>
+      </div>
+
+      <%# CAMPOS PARA CADASTRAR todos os REQUISITOS DE SISTEMA %>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      </div>
+
+      <div class="mt-6 border-t border-gray-700 pt-6">
+        <h3 class="text-lg font-medium text-white mb-4">Detalhes do Jogo</h3>
+
+        <%= f.input :productable_type, as: :hidden, input_html: { value: "Game" } %>
+
+        <%#-- Abaixo passei '@product.productable' explicitamente como segundo argumento para garantir que o formulário pegue o objeto que inicializamos no controller --%>
+        <%= f.simple_fields_for :productable, @product.productable do |game_form| %>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <%= game_form.input :mode, collection: Game.modes.keys, input_html: { class: "input-dark" } %>
+            <%= game_form.input :developer, input_html: { class: "input-dark" } %>
+            <%= game_form.input :release_date, as: :date, html5: true, input_html: { class: "input-dark" } %>
+
+            <%= game_form.association :system_requirement, 
+                  collection: SystemRequirement.all.map { |s| [s.name, s.id] },
+                  label: "Requisitos de Sistema",
+                  input_html: { class: "input-dark" } %>
+          </div>
+        <% end %>
+      </div>
+      <%# FIM DOS CAMPOS DE REQUISITOS DE SISTEMA %>
+
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3 pt-6 border-t border-gray-700 mt-6">
+    <%= link_to "Cancelar", admin_products_path, class: "px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-700" %>
+    <%= f.button :submit, "Salvar Produto", class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow-lg" %>
+  </div>
+  <% end %>
+</div>
