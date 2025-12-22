@@ -32,3 +32,10 @@ Uma aplicação de E-commerce Fullstack robusta construída com a filosofia "The
    ```bash
    git clone [https://github.com/seu-usuario/full-ecomme-2026.git](https://github.com/seu-usuario/full-ecomme-2026.git)
    cd full-ecomme-2026
+
+   O Que Temos Até Agora?
+Backend: O Webhook recebe o aviso de pagamento e atualiza o banco de dados (payment_accepted).
+
+Infra: O código está no GitHub.
+
+Frontend: Temos o Modal de recibo (HTML/CSS), mas ele ainda não sabe quando aparecer sozinho. O usuário precisa dar F5.
