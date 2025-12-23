@@ -36,11 +36,21 @@ module Webhooks
       when "PAID"
         order.update!(status: :payment_accepted)
         Rails.logger.info "✅ [WEBHOOK] Pedido ##{order.id} pago com sucesso!"
+
+        # --- A MÁGICA DO TURBO STREAM AQUI ---
+        # Isso procura o usuário que está olhando para esta order e troca o HTML
+        Turbo::StreamsChannel.broadcast_replace_to(
+          order,
+          target: "payment_area",            # O ID da div que criamos no Passo 1
+          partial: "checkout/success_button" # O arquivo que criamos no Passo 2
+        )
+
       when "CANCELLED"
         order.update!(status: :canceled)
         Rails.logger.info "⚠️ [WEBHOOK] Pedido ##{order.id} cancelado."
       end
 
+      # 5. Resposta Final para o Juno
       head :ok
     end
   end
